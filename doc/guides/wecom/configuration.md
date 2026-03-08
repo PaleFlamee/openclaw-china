@@ -121,7 +121,7 @@ openclaw china setup
 
 最小可用配置如下。
 
-### 1. `webhook` 模式
+### 1. `webhook` 模式（不推荐）
 
 > 推荐使用「配置向导」：`openclaw china setup`
 
@@ -150,7 +150,7 @@ openclaw config set gateway.bind lan
 }
 ```
 
-### 2. `ws` 长连接模式
+### 2. `ws` 长连接模式（推荐）
 
 适合没有固定公网 IP、只能主动访问外网的部署环境。
 
@@ -159,7 +159,6 @@ openclaw config set channels.wecom.enabled true
 openclaw config set channels.wecom.mode ws
 openclaw config set channels.wecom.botId your-bot-id
 openclaw config set channels.wecom.secret your-secret
-openclaw config set channels.wecom.publicBaseUrl https://bot.example.com
 ```
 
 也可以直接编辑配置：
@@ -171,8 +170,7 @@ openclaw config set channels.wecom.publicBaseUrl https://bot.example.com
       "enabled": true,
       "mode": "ws",
       "botId": "your-bot-id",
-      "secret": "your-secret",
-      "publicBaseUrl": "https://bot.example.com"
+      "secret": "your-secret"
     }
   }
 }
@@ -184,7 +182,6 @@ openclaw config set channels.wecom.publicBaseUrl https://bot.example.com
 - `heartbeatIntervalMs`: 心跳间隔，默认 30000
 - `reconnectInitialDelayMs`: 首次重连延迟，默认 1000
 - `reconnectMaxDelayMs`: 最大重连延迟，默认 30000
-- `publicBaseUrl`: `ws` 模式发送本地图片/文件时必填，用于暴露 `/wecom-media/...` 临时地址
 
 可选策略项（按需）：
 
@@ -201,7 +198,8 @@ openclaw config set channels.wecom.publicBaseUrl https://bot.example.com
 - `ws` 模式支持当前进程内“已激活会话”的主动发送：
   用户或群先给机器人发过至少一条消息后，后续可以主动发 `markdown` 或 `template_card`。
 - 如果 `ws` 模式下从未收到该用户/群的消息，主动发送会直接返回明确错误，不会静默丢弃。
-- `ws` 模式发送本地媒体文件时，必须先配置 `publicBaseUrl`，否则无法生成企业微信可访问的临时链接。
+- `ws` 模式发送媒体时，已经可公开访问的 `http(s)` URL 仍可直接发送；本地路径中仅图片会通过回复流原生发送，本地文件/语音等媒体仍不支持。
+- `webhook` 模式仍保留原有 `/wecom-media/...` 临时文件回传能力。
 
 ## 四、启动并验证
 
